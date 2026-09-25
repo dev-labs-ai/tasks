@@ -40,6 +40,10 @@ func run() error {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
+	if err := database.Migrate(ctx, cfg.DatabaseURL); err != nil {
+		return err
+	}
+
 	pool, err := database.Open(ctx, cfg.DatabaseURL)
 	if err != nil {
 		return err
