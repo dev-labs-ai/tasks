@@ -37,7 +37,7 @@ the seven steps of the tech spec's implementation plan (section 12).
 -   [x] T09 --- Implement password hashing and session tokens
 -   [x] T10 --- Implement input validation
 -   [x] T11 --- Implement the auth service
--   [ ] T12 --- Expose the auth endpoints
+-   [x] T12 --- Expose the auth endpoints
 -   [ ] T13 --- Clean up expired sessions and login attempts
 
 **4. Tasks API**

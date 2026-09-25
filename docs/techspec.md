@@ -98,8 +98,8 @@ tasks/
 │       │   ├── auth/               password hashing, session tokens
 │       │   ├── config/             environment parsing
 │       │   ├── database/           pgx pool, migration runner
-│       │   ├── handlers/           HTTP handlers, JSON and error helpers
-│       │   ├── middleware/         recover, logging, auth
+│       │   ├── handlers/           HTTP handlers, requireAuth, JSON and errors
+│       │   ├── middleware/         recover, logging, cross-origin check
 │       │   ├── repositories/       sqlc output (generated, never edited)
 │       │   └── services/           auth and task business rules
 │       ├── migrations/             goose SQL files + embed.go

@@ -14,10 +14,12 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/dev-labs-ai/tasks/apps/api/internal/auth"
 	"github.com/dev-labs-ai/tasks/apps/api/internal/config"
 	"github.com/dev-labs-ai/tasks/apps/api/internal/database"
 	"github.com/dev-labs-ai/tasks/apps/api/internal/handlers"
 	"github.com/dev-labs-ai/tasks/apps/api/internal/middleware"
+	"github.com/dev-labs-ai/tasks/apps/api/internal/services"
 )
 
 const shutdownTimeout = 10 * time.Second
@@ -51,11 +53,15 @@ func run() error {
 	}
 	defer pool.Close()
 
+	store := database.NewStore(pool)
+	router := handlers.NewRouter(handlers.Deps{
+		DB:            pool,
+		Auth:          services.NewAuthService(store, auth.Passwords{}),
+		SecureCookies: cfg.IsProduction(),
+	})
 	// Log wraps Recover so a request that panics is still logged, with the
 	// 500 that Recover writes.
-	handler := middleware.Log(middleware.Recover(middleware.CrossOrigin(
-		handlers.NewRouter(pool),
-	)))
+	handler := middleware.Log(middleware.Recover(middleware.CrossOrigin(router)))
 
 	srv := &http.Server{
 		Addr:              net.JoinHostPort("", strconv.Itoa(cfg.Port)),

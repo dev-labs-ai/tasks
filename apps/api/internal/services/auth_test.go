@@ -6,13 +6,14 @@ import (
 	"time"
 
 	"github.com/dev-labs-ai/tasks/apps/api/internal/auth"
+	"github.com/dev-labs-ai/tasks/apps/api/internal/services/servicestest"
 )
 
 var testNow = time.Date(2026, 9, 25, 12, 0, 0, 0, time.UTC)
 
-func newAuthService() (*AuthService, *fakeStore, *fakePasswords) {
-	store := newFakeStore(testNow)
-	passwords := &fakePasswords{}
+func newAuthService() (*AuthService, *servicestest.Store, *servicestest.Passwords) {
+	store := servicestest.NewStore(testNow)
+	passwords := &servicestest.Passwords{}
 	s := NewAuthService(store, passwords)
 	s.now = func() time.Time { return testNow }
 	return s, store, passwords
@@ -32,15 +33,15 @@ func TestRegisterCreatesUserAndSession(t *testing.T) {
 	if want := testNow.Add(24 * time.Hour); !session.ExpiresAt.Equal(want) {
 		t.Errorf("expires at %v, want %v", session.ExpiresAt, want)
 	}
-	stored, ok := store.sessions[string(auth.HashSessionToken(session.Token))]
+	stored, ok := store.Sessions[string(auth.HashSessionToken(session.Token))]
 	if !ok || stored.UserID != session.User.ID {
 		t.Errorf("no session stored under the token's hash for user %d", session.User.ID)
 	}
-	if store.users[session.User.ID].PasswordHash != "hash:correct horse" {
+	if store.Users[session.User.ID].PasswordHash != "hash:correct horse" {
 		t.Error("the stored password is not the hash")
 	}
-	if store.calls["InTx"] != 1 {
-		t.Errorf("InTx called %d times, want user and session in one transaction", store.calls["InTx"])
+	if store.Calls["InTx"] != 1 {
+		t.Errorf("InTx called %d times, want user and session in one transaction", store.Calls["InTx"])
 	}
 }
 
@@ -56,7 +57,7 @@ func TestRegisterValidatesEveryField(t *testing.T) {
 	if ve.Fields["email"] == "" || ve.Fields["password"] == "" {
 		t.Errorf("fields = %v, want problems for email and password", ve.Fields)
 	}
-	if passwords.hashes != 0 || store.calls["CreateUser"] != 0 {
+	if passwords.Hashes != 0 || store.Calls["CreateUser"] != 0 {
 		t.Error("invalid input reached hashing or the database")
 	}
 }
@@ -85,8 +86,8 @@ func TestLoginFailuresLookTheSame(t *testing.T) {
 	if !errors.Is(unknownErr, ErrInvalidCredentials) || !errors.Is(wrongErr, ErrInvalidCredentials) {
 		t.Errorf("unknown email: %v; wrong password: %v; want ErrInvalidCredentials for both", unknownErr, wrongErr)
 	}
-	if passwords.dummies != 1 {
-		t.Errorf("VerifyDummy called %d times, want once for the unknown email", passwords.dummies)
+	if passwords.Dummies != 1 {
+		t.Errorf("VerifyDummy called %d times, want once for the unknown email", passwords.Dummies)
 	}
 }
 
@@ -101,7 +102,7 @@ func TestLoginRefusesTheSixthAttemptWithoutCheckingThePassword(t *testing.T) {
 			t.Fatalf("attempt %d: err = %v, want ErrInvalidCredentials", i, err)
 		}
 	}
-	checked := passwords.verifies
+	checked := passwords.Verifies
 
 	_, err := s.Login(t.Context(), "ana@example.com", "correct horse")
 
@@ -109,13 +110,13 @@ func TestLoginRefusesTheSixthAttemptWithoutCheckingThePassword(t *testing.T) {
 	if !errors.As(err, &tooMany) {
 		t.Fatalf("6th attempt: err = %v, want *TooManyAttemptsError", err)
 	}
-	if !tooMany.RetryAt.Equal(windowEnd) {
-		t.Errorf("RetryAt = %v, want the window end %v", tooMany.RetryAt, windowEnd)
+	if !tooMany.RetryAt.Equal(store.WindowEnd) {
+		t.Errorf("RetryAt = %v, want the window end %v", tooMany.RetryAt, store.WindowEnd)
 	}
-	if passwords.verifies != checked || passwords.dummies != 0 {
+	if passwords.Verifies != checked || passwords.Dummies != 0 {
 		t.Error("the refused attempt still checked the password")
 	}
-	if store.calls["CreateSession"] != 1 {
+	if store.Calls["CreateSession"] != 1 {
 		t.Error("the refused attempt created a session")
 	}
 }
@@ -146,7 +147,7 @@ func TestLoginSuccessClearsAttemptsAndOpensSession(t *testing.T) {
 		t.Fatalf("Login: %v", err)
 	}
 
-	if _, counted := store.attempts["ana@example.com"]; counted || store.calls["ClearLoginAttempts"] != 1 {
+	if _, counted := store.Attempts["ana@example.com"]; counted || store.Calls["ClearLoginAttempts"] != 1 {
 		t.Error("a successful login did not clear the attempts")
 	}
 	if userID, err := s.Authenticate(t.Context(), session.Token); err != nil || userID != session.User.ID {
@@ -163,7 +164,7 @@ func TestLoginValidatesInputBeforeCounting(t *testing.T) {
 	if !errors.As(err, &ve) || ve.Fields["email"] == "" || ve.Fields["password"] == "" {
 		t.Errorf("err = %v, want a *ValidationError for email and password", err)
 	}
-	if store.calls["RegisterLoginAttempt"] != 0 {
+	if store.Calls["RegisterLoginAttempt"] != 0 {
 		t.Error("a malformed request touched the attempt counter")
 	}
 }
@@ -181,11 +182,11 @@ func TestAuthenticateAndLogout(t *testing.T) {
 		}
 	}
 
-	store.now = testNow.Add(SessionTTL)
+	store.Now = testNow.Add(SessionTTL)
 	if _, err := s.Authenticate(t.Context(), session.Token); !errors.Is(err, ErrUnauthenticated) {
 		t.Errorf("expired session: err = %v, want ErrUnauthenticated", err)
 	}
-	store.now = testNow
+	store.Now = testNow
 
 	if err := s.Logout(t.Context(), session.Token); err != nil {
 		t.Fatalf("Logout: %v", err)

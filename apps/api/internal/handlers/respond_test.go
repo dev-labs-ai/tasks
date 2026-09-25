@@ -101,7 +101,7 @@ func TestWriteErrorIncludesFieldsOnlyWhenPresent(t *testing.T) {
 }
 
 func TestRouterAnswersUnknownRoutesWithNotFound(t *testing.T) {
-	router := NewRouter(fakePinger{})
+	router := NewRouter(Deps{DB: fakePinger{}})
 
 	for _, req := range []*http.Request{
 		httptest.NewRequest(http.MethodGet, "/api/v1/nothing-here", nil),
