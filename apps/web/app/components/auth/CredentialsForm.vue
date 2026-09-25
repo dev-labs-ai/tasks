@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ApiError, toApiError } from '~/services/client'
+import { toApiError, type ApiError } from '~/services/client'
 
 // The login and register forms: same fields, different rules and call.
 const props = defineProps<{ mode: 'login' | 'register' }>()

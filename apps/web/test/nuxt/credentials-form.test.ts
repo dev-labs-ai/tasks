@@ -74,7 +74,7 @@ describe('CredentialsForm', () => {
     expect(wrapper.get('[data-testid="form-error"]').text()).toBe(
       'Invalid email or password',
     )
-    expect(wrapper.get('[role="alert"]').exists()).toBe(true)
+    expect(wrapper.find('[role="alert"]').exists()).toBe(true)
     expect(
       (wrapper.find('input[type="email"]').element as HTMLInputElement).value,
     ).toBe('ana@example.com')
