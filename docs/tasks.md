@@ -21,7 +21,7 @@ the seven steps of the tech spec's implementation plan (section 12).
 **1. Restructure**
 
 -   [x] T01 --- Move the Nuxt scaffold into `apps/web/`
--   [ ] T02 --- Create the Go API skeleton
+-   [x] T02 --- Create the Go API skeleton
 -   [ ] T03 --- Add Docker Compose, `.env.example` and the Makefile
 -   [ ] T04 --- Configure Nuxt as an SPA with the dev proxy
 -   [ ] T05 --- Set up linting and formatting
