@@ -54,6 +54,20 @@ func run() error {
 	defer pool.Close()
 
 	store := database.NewStore(pool)
+
+	// The cleanup job stops, and is waited for, before the deferred
+	// pool.Close above runs.
+	jobsCtx, stopJobs := context.WithCancel(ctx)
+	cleanupDone := make(chan struct{})
+	go func() {
+		defer close(cleanupDone)
+		services.RunCleanup(jobsCtx, store, services.CleanupInterval)
+	}()
+	defer func() {
+		stopJobs()
+		<-cleanupDone
+	}()
+
 	router := handlers.NewRouter(handlers.Deps{
 		DB:            pool,
 		Auth:          services.NewAuthService(store, auth.Passwords{}),

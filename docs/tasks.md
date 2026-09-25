@@ -38,7 +38,7 @@ the seven steps of the tech spec's implementation plan (section 12).
 -   [x] T10 --- Implement input validation
 -   [x] T11 --- Implement the auth service
 -   [x] T12 --- Expose the auth endpoints
--   [ ] T13 --- Clean up expired sessions and login attempts
+-   [x] T13 --- Clean up expired sessions and login attempts
 
 **4. Tasks API**
 
