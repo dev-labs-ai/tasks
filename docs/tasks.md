@@ -52,7 +52,7 @@ the seven steps of the tech spec's implementation plan (section 12).
 -   [x] T18 --- Add API types and client-side validation
 -   [x] T19 --- Add the API client plugin
 -   [x] T20 --- Add the auth store, route middleware and layouts
--   [ ] T21 --- Build the register and login pages
+-   [x] T21 --- Build the register and login pages
 
 **6. Task page**
 

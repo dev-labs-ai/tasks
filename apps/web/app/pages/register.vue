@@ -1,7 +1,8 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'auth', guest: true })
+useHead({ title: 'Create an account · Tasks' })
 </script>
 
 <template>
-  <h1 class="text-2xl font-semibold">Create an account</h1>
+  <AuthCredentialsForm mode="register" />
 </template>
