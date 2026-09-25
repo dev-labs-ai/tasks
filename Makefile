@@ -2,7 +2,7 @@
 
 SQLC_VERSION := v1.31.1
 
-.PHONY: dev dev-api dev-web db migrate test test-integration lint lint-api lint-web fmt generate build
+.PHONY: dev dev-api dev-web db migrate test test-integration test-e2e lint lint-api lint-web fmt generate build
 
 # dev: start PostgreSQL, the API and nuxt dev; Ctrl+C stops the last two
 dev: db
@@ -31,6 +31,11 @@ test: apps/web/node_modules
 # test-integration: run the Go tests that need PostgreSQL; needs Docker
 test-integration:
 	cd apps/api && go test -tags=integration ./...
+
+# test-e2e: build and start the production stack, then run Playwright
+test-e2e: .env tests/e2e/node_modules
+	docker compose up -d --build --wait
+	cd tests/e2e && bunx playwright install chromium && E2E_BASE_URL=http://localhost:$(or $(WEB_PORT),8088) bun run test
 
 # lint: check formatting, static analysis and types without changing files
 lint: lint-api lint-web
@@ -62,4 +67,8 @@ fmt: apps/web/node_modules
 
 apps/web/node_modules: apps/web/bun.lock
 	cd apps/web && bun install --frozen-lockfile
+	@touch $@
+
+tests/e2e/node_modules: tests/e2e/bun.lock
+	cd tests/e2e && bun install --frozen-lockfile
 	@touch $@
