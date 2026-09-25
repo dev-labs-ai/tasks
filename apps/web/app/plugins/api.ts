@@ -8,7 +8,10 @@ export default defineNuxtPlugin((nuxtApp) => {
   // Nuxt's $fetch is an ofetch instance; its Nitro typing adds typed
   // routes this client does not use.
   const client = createClient($fetch as unknown as $Fetch, async () => {
-    await nuxtApp.runWithContext(() => navigateTo('/login'))
+    await nuxtApp.runWithContext(() => {
+      useAuthStore().clear()
+      return navigateTo('/login')
+    })
   })
 
   return {
