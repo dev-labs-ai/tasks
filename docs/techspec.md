@@ -504,7 +504,7 @@ The `default` layout shows the user's email and a logout button.
     message; an inline alert for errors.
 
 shadcn-vue components used: `button`, `input`, `label`, `checkbox`,
-`card`, `tabs`, `alert`, `skeleton`. Icons from `lucide-vue-next`.
+`card`, `tabs`, `alert`, `skeleton`. Icons from `@lucide/vue` (what shadcn-vue installs).
 
 ### 7.5 Accessibility and responsiveness
 

@@ -47,7 +47,7 @@ the seven steps of the tech spec's implementation plan (section 12).
 
 **5. Frontend foundation**
 
--   [ ] T16 --- Install Tailwind CSS, shadcn-vue and Pinia
+-   [x] T16 --- Install Tailwind CSS, shadcn-vue and Pinia
 -   [ ] T17 --- Set up Vitest with `@nuxt/test-utils`
 -   [ ] T18 --- Add API types and client-side validation
 -   [ ] T19 --- Add the API client plugin
@@ -322,7 +322,7 @@ list order and `status` filter; invalid `status` → `400`; `PATCH`
 
 -   Tailwind CSS 4 and shadcn-vue, following shadcn-vue's Nuxt guide.
 -   shadcn-vue components: `button`, `input`, `label`, `checkbox`,
-    `card`, `tabs`, `alert`, `skeleton`; icons from `lucide-vue-next`.
+    `card`, `tabs`, `alert`, `skeleton`; icons from `@lucide/vue`.
 -   `@pinia/nuxt` with `pinia` and `@vue/devtools-api`.
 
 **Done when** `bun run build` and `make lint` pass, and a page renders a

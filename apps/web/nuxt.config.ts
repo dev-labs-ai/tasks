@@ -1,11 +1,24 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import tailwindcss from '@tailwindcss/vite'
+
 const apiUrl = process.env.API_URL ?? 'http://localhost:8080'
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
-  modules: ['@nuxt/eslint'],
+  modules: ['@nuxt/eslint', '@pinia/nuxt', 'shadcn-nuxt'],
+
+  css: ['~/assets/css/tailwind.css'],
+
+  vite: {
+    plugins: [tailwindcss()],
+  },
+
+  shadcn: {
+    prefix: '',
+    componentDir: '@/components/ui',
+  },
 
   // Every screen but login and register needs a session, so the app is
   // client-rendered and ships as static files (tech spec §1).
