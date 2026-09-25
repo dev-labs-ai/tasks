@@ -20,5 +20,30 @@ services:
       timeout: 5s
       retries: 15
 
+  # api and web are the production images; `make dev` runs only postgres
+  # and starts the API and nuxt dev on the host.
+  api:
+    build:
+      context: .
+      dockerfile: docker/api.Dockerfile
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-tasks}:${POSTGRES_PASSWORD:-tasks}@postgres:5432/${POSTGRES_DB:-tasks}
+      APP_ENV: production
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/web.Dockerfile
+    environment:
+      # A host name turns on automatic HTTPS; ":80" serves plain HTTP.
+      DOMAIN: ${DOMAIN:-:80}
+    ports:
+      - "${WEB_PORT:-8088}:80"
+    depends_on:
+      - api
+
 volumes:
   postgres-data:

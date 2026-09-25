@@ -2,7 +2,7 @@
 
 SQLC_VERSION := v1.31.1
 
-.PHONY: dev dev-api dev-web db migrate test test-integration lint lint-api lint-web fmt generate
+.PHONY: dev dev-api dev-web db migrate test test-integration lint lint-api lint-web fmt generate build
 
 # dev: start PostgreSQL, the API and nuxt dev; Ctrl+C stops the last two
 dev: db
@@ -46,6 +46,10 @@ lint-web: apps/web/node_modules
 # generate: regenerate internal/repositories from queries/ with sqlc
 generate:
 	cd apps/api && go run github.com/sqlc-dev/sqlc/cmd/sqlc@$(SQLC_VERSION) generate
+
+# build: build the production images for the API and the web app
+build:
+	docker compose build api web
 
 # fmt: rewrite Go and web sources in place
 fmt: apps/web/node_modules

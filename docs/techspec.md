@@ -528,6 +528,8 @@ shadcn-vue components used: `button`, `input`, `label`, `checkbox`,
 | `APP_ENV`      | API                   | `development`                                      | `production` turns on `Secure` cookies and JSON logs |
 | `API_URL`      | web, dev only         | `http://localhost:8080`                            | target of `nitro.devProxy`              |
 | `POSTGRES_*`   | docker compose        | `POSTGRES_USER=tasks`                              | local database only                    |
+| `WEB_PORT`     | docker compose        | `8088`                                             | host port of the Caddy container       |
+| `DOMAIN`       | web container (Caddy) | `tasks.example.com`                                | turns on automatic HTTPS; default `:80` serves plain HTTP |
 
 `.env.example` lists all of them with development values and no real
 credentials (spec section 14).
