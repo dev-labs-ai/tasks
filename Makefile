@@ -23,9 +23,10 @@ db: .env
 migrate: db
 	cd apps/api && DATABASE_URL="$(DATABASE_URL)" go run ./cmd/migrate
 
-# test: run the unit tests
-test:
+# test: run the Go unit and HTTP tests and the Vitest suites
+test: apps/web/node_modules
 	cd apps/api && go test ./...
+	cd apps/web && bun run test
 
 # test-integration: run the Go tests that need PostgreSQL; needs Docker
 test-integration:
