@@ -28,6 +28,7 @@ func newTestAPI(t *testing.T, secureCookies bool) *testAPI {
 	router := NewRouter(Deps{
 		DB:            fakePinger{},
 		Auth:          services.NewAuthService(store, &servicestest.Passwords{}),
+		Tasks:         services.NewTaskService(store),
 		SecureCookies: secureCookies,
 	})
 	api := &testAPI{t: t, router: router, store: store}

@@ -31,6 +31,10 @@ func writeServiceError(w http.ResponseWriter, r *http.Request, err error) {
 		WriteError(w, &Error{Status: http.StatusUnauthorized, Code: CodeInvalidCredentials, Message: "Invalid email or password"})
 	case errors.Is(err, services.ErrUnauthenticated):
 		WriteError(w, &Error{Status: http.StatusUnauthorized, Code: CodeUnauthenticated, Message: "Log in to continue"})
+	case errors.Is(err, services.ErrTaskNotFound):
+		WriteError(w, &Error{Status: http.StatusNotFound, Code: CodeTaskNotFound, Message: "Task not found"})
+	case errors.Is(err, services.ErrEmptyUpdate):
+		WriteError(w, MalformedRequest())
 	default:
 		slog.ErrorContext(r.Context(), "request failed", "method", r.Method, "path", r.URL.Path, "error", err)
 		WriteError(w, InternalError())

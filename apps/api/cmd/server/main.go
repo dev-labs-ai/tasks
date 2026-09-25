@@ -71,6 +71,7 @@ func run() error {
 	router := handlers.NewRouter(handlers.Deps{
 		DB:            pool,
 		Auth:          services.NewAuthService(store, auth.Passwords{}),
+		Tasks:         services.NewTaskService(store),
 		SecureCookies: cfg.IsProduction(),
 	})
 	// Log wraps Recover so a request that panics is still logged, with the
