@@ -42,7 +42,7 @@ the seven steps of the tech spec's implementation plan (section 12).
 
 **4. Tasks API**
 
--   [ ] T14 --- Implement the task service
+-   [x] T14 --- Implement the task service
 -   [ ] T15 --- Expose the task endpoints
 
 **5. Frontend foundation**

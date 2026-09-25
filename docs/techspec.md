@@ -427,7 +427,7 @@ from sqlc models, so `password_hash` cannot leak by accident.
 
 | Code                  | Status | When                                                    |
 |-----------------------|--------|---------------------------------------------------------|
-| `MALFORMED_REQUEST`   | 400    | body is not valid JSON, has unknown fields, or bad `{id}` |
+| `MALFORMED_REQUEST`   | 400    | body is not valid JSON, has unknown fields, or bad `{id}`; a `PATCH` with no fields |
 | `VALIDATION_FAILED`   | 400    | a field breaks a rule in 5.6                             |
 | `UNAUTHENTICATED`     | 401    | no session, or it expired                               |
 | `INVALID_CREDENTIALS` | 401    | wrong email or password                                 |
