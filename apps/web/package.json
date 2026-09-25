@@ -23,6 +23,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "nuxt": "^4.5.2",
+    "ofetch": "^1.5.1",
     "pinia": "^4.0.3",
     "reka-ui": "^2.10.5",
     "shadcn-vue": "^2.8.2",
