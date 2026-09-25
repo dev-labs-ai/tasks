@@ -66,7 +66,7 @@ the seven steps of the tech spec's implementation plan (section 12).
 -   [x] T26 --- Build the production Docker images
 -   [x] T27 --- Write the E2E tests
 -   [x] T28 --- Add the CI workflow
--   [ ] T29 --- Document setup in the README
+-   [x] T29 --- Document setup in the README
 
 ------------------------------------------------------------------------
 
