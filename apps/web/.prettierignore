@@ -1,0 +1,8 @@
+# Generated output; source files are all formatted.
+.nuxt
+.output
+.data
+.nitro
+.cache
+dist
+bun.lock

@@ -5,6 +5,8 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
+  modules: ['@nuxt/eslint'],
+
   // Every screen but login and register needs a session, so the app is
   // client-rendered and ships as static files (tech spec §1).
   ssr: false,

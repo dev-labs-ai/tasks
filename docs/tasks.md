@@ -24,7 +24,7 @@ the seven steps of the tech spec's implementation plan (section 12).
 -   [x] T02 --- Create the Go API skeleton
 -   [x] T03 --- Add Docker Compose, `.env.example` and the Makefile
 -   [x] T04 --- Configure Nuxt as an SPA with the dev proxy
--   [ ] T05 --- Set up linting and formatting
+-   [x] T05 --- Set up linting and formatting
 
 **2. Database**
 
