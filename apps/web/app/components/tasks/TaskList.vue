@@ -10,11 +10,6 @@ const props = defineProps<{
   remove: (id: number) => Promise<boolean>
 }>()
 
-const emit = defineEmits<{
-  /** The last task was deleted; the page moves focus elsewhere. */
-  empty: []
-}>()
-
 // Keyed by task ID: refs collected in a v-for are not guaranteed to follow
 // the array order.
 const items = new Map<number, InstanceType<typeof TaskItem>>()
@@ -25,13 +20,13 @@ function setItem(id: number, el: unknown) {
 }
 
 // After a delete, focus goes to the task that took its place, or the one
-// before it at the end of the list (tech spec §7.5).
+// before it at the end of the list (tech spec §7.5). When the list empties
+// this component unmounts, so the page moves focus instead.
 async function removeAt(index: number, id: number) {
   if (!(await props.remove(id))) return
   await nextTick()
   const next = props.tasks[Math.min(index, props.tasks.length - 1)]
   if (next) items.get(next.id)?.focus()
-  else emit('empty')
 }
 </script>
 

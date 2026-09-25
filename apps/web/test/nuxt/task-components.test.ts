@@ -194,25 +194,26 @@ describe('TaskItem', () => {
 })
 
 describe('TaskList', () => {
-  it('emits empty after deleting the last task', async () => {
-    const tasks = ref([task(1, 'only')])
+  it('focuses the next task after a delete', async () => {
+    const tasks = [task(1, 'first'), task(2, 'second')]
     const wrapper = await mountSuspended(TaskList, {
+      attachTo: document.body,
       props: {
-        tasks: tasks.value,
+        tasks,
         isPending: () => false,
         update: vi.fn(),
         remove: async () => {
-          tasks.value = []
-          await wrapper.setProps({ tasks: [] })
+          await wrapper.setProps({ tasks: [tasks[1]!] })
           return true
         },
       },
     })
 
-    await wrapper.get('[aria-label="Delete task: only"]').trigger('click')
+    await wrapper.get('[aria-label="Delete task: first"]').trigger('click')
     await flushPromises()
 
-    expect(wrapper.emitted('empty')).toHaveLength(1)
+    expect(document.activeElement?.getAttribute('aria-label')).toBe('second')
+    wrapper.unmount()
   })
 })
 

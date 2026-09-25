@@ -59,7 +59,7 @@ the seven steps of the tech spec's implementation plan (section 12).
 -   [x] T22 --- Implement `useTasks`
 -   [x] T23 --- Implement `useTaskFilter`
 -   [x] T24 --- Build the task components
--   [ ] T25 --- Build the task page
+-   [x] T25 --- Build the task page
 
 **7. Delivery**
 

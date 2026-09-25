@@ -16,12 +16,13 @@ const editing = ref(false)
 const draft = ref('')
 const editError = ref<string | null>(null)
 const editInputId = useId()
-const checkbox = useTemplateRef<ComponentPublicInstance>('checkbox')
+const root = useTemplateRef<HTMLLIElement>('root')
 const editInput = useTemplateRef<ComponentPublicInstance>('editInput')
-const editButton = useTemplateRef<ComponentPublicInstance>('editButton')
 
-function focusOf(target: ComponentPublicInstance | null) {
-  ;(target?.$el as HTMLElement | undefined)?.focus()
+// Found through the DOM: some shadcn-vue components render more than one
+// root node, so their $el is not always the focusable element.
+function focusIn(selector: string) {
+  root.value?.querySelector<HTMLElement>(selector)?.focus()
 }
 
 async function startEdit() {
@@ -39,7 +40,7 @@ async function cancel() {
   editing.value = false
   editError.value = null
   await nextTick()
-  focusOf(editButton.value)
+  focusIn('[data-action="edit"]')
 }
 
 async function save() {
@@ -58,17 +59,17 @@ function toggle(checked: boolean | 'indeterminate') {
   props.update({ completed: checked === true })
 }
 
-defineExpose({ focus: () => focusOf(checkbox.value) })
+defineExpose({ focus: () => focusIn('[data-slot="checkbox"]') })
 </script>
 
 <template>
   <li
+    ref="root"
     class="rounded-lg border bg-background px-3 py-2"
     :data-completed="task.completed || undefined"
   >
     <div class="flex items-center gap-3">
       <Checkbox
-        ref="checkbox"
         :model-value="task.completed"
         :disabled="pending"
         :aria-label="task.title"
@@ -117,7 +118,7 @@ defineExpose({ focus: () => focusOf(checkbox.value) })
           {{ task.title }}
         </span>
         <Button
-          ref="editButton"
+          data-action="edit"
           size="icon-sm"
           variant="ghost"
           :disabled="pending"
