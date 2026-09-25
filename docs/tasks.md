@@ -34,7 +34,7 @@ the seven steps of the tech spec's implementation plan (section 12).
 **3. Auth API**
 
 -   [x] T08 --- Build the HTTP foundation
--   [ ] T09 --- Implement password hashing and session tokens
+-   [x] T09 --- Implement password hashing and session tokens
 -   [ ] T10 --- Implement input validation
 -   [ ] T11 --- Implement the auth service
 -   [ ] T12 --- Expose the auth endpoints
