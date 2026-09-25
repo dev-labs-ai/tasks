@@ -29,7 +29,7 @@ the seven steps of the tech spec's implementation plan (section 12).
 **2. Database**
 
 -   [x] T06 --- Add the initial migration and the migration runner
--   [ ] T07 --- Generate the repositories with sqlc
+-   [x] T07 --- Generate the repositories with sqlc
 
 **3. Auth API**
 
