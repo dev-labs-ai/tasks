@@ -196,8 +196,8 @@ DROP TABLE users;
 
 ``` text
 http.Server
-  └─ recover            panic → 500 INTERNAL_ERROR, logged with stack
-      └─ log            method, path, status, duration (log/slog)
+  └─ log                method, path, status, duration (log/slog)
+      └─ recover        panic → 500 INTERNAL_ERROR, logged with stack
           └─ CrossOriginProtection   non-safe cross-origin request → 403
               └─ ServeMux
                   ├─ public routes      register, login, healthz
@@ -205,6 +205,8 @@ http.Server
                       └─ handler → service → repositories (sqlc) → PostgreSQL
 ```
 
+-   Logging sits outside recover, so a request that panics is still
+    logged, with the 500 that recover writes.
 -   Request bodies are capped at 64 KiB (`http.MaxBytesReader`) and
     decoded with `DisallowUnknownFields`.
 -   The server sets read-header, read, write and idle timeouts and shuts

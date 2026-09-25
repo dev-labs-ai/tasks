@@ -17,6 +17,7 @@ import (
 	"github.com/dev-labs-ai/tasks/apps/api/internal/config"
 	"github.com/dev-labs-ai/tasks/apps/api/internal/database"
 	"github.com/dev-labs-ai/tasks/apps/api/internal/handlers"
+	"github.com/dev-labs-ai/tasks/apps/api/internal/middleware"
 )
 
 const shutdownTimeout = 10 * time.Second
@@ -50,12 +51,15 @@ func run() error {
 	}
 	defer pool.Close()
 
-	mux := http.NewServeMux()
-	mux.Handle("GET /healthz", handlers.Health(pool))
+	// Log wraps Recover so a request that panics is still logged, with the
+	// 500 that Recover writes.
+	handler := middleware.Log(middleware.Recover(middleware.CrossOrigin(
+		handlers.NewRouter(pool),
+	)))
 
 	srv := &http.Server{
 		Addr:              net.JoinHostPort("", strconv.Itoa(cfg.Port)),
-		Handler:           mux,
+		Handler:           handler,
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       10 * time.Second,
 		WriteTimeout:      10 * time.Second,
