@@ -73,15 +73,56 @@ Never commit `.env` or real credentials.
 | `make generate`         | regenerate the sqlc repositories after editing `apps/api/queries` |
 | `make build`            | build the production images                                      |
 
-## Production-like stack
+## Run it in containers
+
+The same app with the production images: PostgreSQL, the Go API, and Caddy
+serving the generated SPA. No Go, Node or Bun needed on the host, only
+Docker.
+
+### Start
 
 ```bash
 docker compose up -d --build
 ```
 
-Open <http://localhost:8088>. Caddy serves the generated SPA and forwards
-`/api/*` to the API container; everything is on one origin. Set `DOMAIN` to
-a real host name to get automatic HTTPS.
+Open <http://localhost:8088>. Caddy serves the app and forwards `/api/*` to
+the API container, all on one origin.
+
+- `--build` rebuilds the images from the current code; without code changes,
+  `docker compose up -d` is enough.
+- Add `--wait` to return only once every service is up.
+- Another port: `WEB_PORT=9000 docker compose up -d --build`.
+- Set `DOMAIN` to a real host name for automatic HTTPS.
+
+### Watch
+
+```bash
+docker compose ps              # container status
+docker compose logs -f api     # API logs
+docker compose logs -f web     # Caddy logs
+```
+
+### Stop
+
+```bash
+docker compose down            # stop and remove the containers; data is kept
+docker compose down -v         # also delete the database volume: users and tasks are gone
+```
+
+### Differences from `make dev`
+
+- The API runs with `APP_ENV=production`: the session cookie is `Secure` and
+  logs are JSON. Chrome and Firefox accept `Secure` cookies on
+  `http://localhost`; Safari may not, so logging in there can fail over
+  plain HTTP.
+- No hot reload: rebuild with `docker compose up -d --build` after a change.
+- Both setups share the same PostgreSQL container and volume, so they see
+  the same users and tasks.
+- Avoid running both at once in the same browser: the `localhost` cookie is
+  shared across ports, so the sessions get mixed up.
+
+`make build` only builds the images; `make test-e2e` starts the stack and
+runs the Playwright tests against it.
 
 ## Project layout
 
